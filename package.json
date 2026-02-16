@@ -1,0 +1,37 @@
+{
+  "name": "openclaw-security-example",
+  "version": "1.0.0",
+  "description": "Reference integration example for @openclaw/llm-security",
+  "type": "module",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "llm",
+    "security",
+    "openclaw",
+    "example",
+    "integration"
+  ],
+  "author": "OpenClaw Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.37.1",
+    "@openclaw/llm-security": "file:../open-claw/packages/llm-security",
+    "express": "^5.2.1",
+    "openai": "^4.77.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
