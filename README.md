@@ -128,6 +128,12 @@ curl -X POST http://localhost:3000/api/admin/chat \
   }'
 ```
 
+The role comes from the server setting `ADMIN_CHAT_ROLE` (default `admin`). The
+caller's `role` may only narrow it (for example `admin` to `user`); a wider or
+unknown role gets `403`. `tools` is a list of tool names, such as
+`["search"]`. The server sends its own definitions of those tools, and only
+those the role allows. Tool definitions sent by the caller are rejected.
+
 **Security Features:**
 - All 8 security phases enabled
 - Secret detection (mode: reject - blocks on detection)
