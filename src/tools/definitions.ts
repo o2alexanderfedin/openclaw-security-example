@@ -83,9 +83,9 @@ export const updateRecordTool: ToolConfig = {
       pattern: /^\d+$/,
       errorMessage: "ID must be numeric",
     },
-    // Value must not contain SQL keywords
+    // Value must not contain SQL keywords on any line ("s" lets "." match line breaks)
     value: {
-      pattern: /^(?!.*(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC)).*/i,
+      pattern: /^(?!.*(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC)).*/is,
       errorMessage: "Value cannot contain SQL keywords",
     },
   },
