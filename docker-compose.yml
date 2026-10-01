@@ -9,6 +9,7 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - NODE_ENV=development
+      - ADMIN_CHAT_ROLE=${ADMIN_CHAT_ROLE:-admin}
     volumes:
       - .:/app
       - /app/node_modules

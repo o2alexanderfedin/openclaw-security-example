@@ -22,9 +22,16 @@ import {
 import type { SecurityPolicy } from "@openclaw/llm-security";
 import { ALL_TOOLS } from "./tools/definitions.js";
 import { ALL_ROLES } from "./rbac/roles.js";
+import { resolveAdminRequest } from "./admin-request.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Role granted to the admin chat endpoint. Set by the server, never by the caller.
+const ADMIN_CHAT_ROLE = process.env.ADMIN_CHAT_ROLE || "admin";
+if (!ALL_ROLES.some((r) => r.name === ADMIN_CHAT_ROLE)) {
+  throw new Error(`ADMIN_CHAT_ROLE "${ADMIN_CHAT_ROLE}" is not a defined role`);
+}
 
 // Middleware
 app.use(express.json());
@@ -161,11 +168,19 @@ app.post(
  */
 app.post("/api/admin/chat", createSecurityMiddleware(createStrictPolicy()), async (req, res) => {
   try {
-    const { message, role = "admin", tools = [] } = req.body;
+    const { message } = req.body;
 
     if (!message) {
       return res.status(400).json({ error: "Message is required" });
     }
+
+    // Role comes from the server; the caller may only narrow it and pick
+    // server-defined tools by name.
+    const access = resolveAdminRequest(req.body, ADMIN_CHAT_ROLE, ALL_ROLES, ALL_TOOLS);
+    if (!access.ok) {
+      return res.status(access.status).json({ error: access.error });
+    }
+    const { role, tools } = access;
 
     // Create strict policy with tool security components
     const strictPolicy: SecurityPolicy = {
@@ -191,7 +206,7 @@ app.post("/api/admin/chat", createSecurityMiddleware(createStrictPolicy()), asyn
           content: `Role: ${role}\n\n${message}`,
         },
       ],
-      tools: tools.length > 0 ? tools : undefined,
+      tools,
     });
 
     res.json({
